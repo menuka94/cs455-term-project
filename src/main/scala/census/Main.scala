@@ -4,7 +4,7 @@ import util.DataFields
 
 object Main {
   private final val logger = org.apache.log4j.LogManager.getLogger(Main.getClass.getName)
-  private final val LOG_PREFIX = "**************************"
+  private final val LOG_PREFIX = "************************** "
 
   def main(args: Array[String]) = {
     // start Spark Context
@@ -24,8 +24,18 @@ object Main {
       .option("mode", "DROPMALFORMED")
       .load(inputPath)
 
-    val columns = Seq(DataFields.VEHICLE_MAKE, DataFields.REGISTRATION_STATE)
-    val df2 = df.select()
+    val df2 = df.select(DataFields.VEHICLE_MAKE)
+    val collectedDf2 = df2.collect()
+    for (value <- collectedDf2) {
+      logger.info(LOG_PREFIX + value)
+    }
+
+    val df3 = df.select(DataFields.LATITUDE, DataFields.LONGITUDE)
+    val collectedDf3 = df3.collect()
+    for (value <- collectedDf3) {
+      logger.info(LOG_PREFIX + value)
+    }
+
 
     logger.info(LOG_PREFIX + " Describing dataframe")
     logger.info(df.describe())
