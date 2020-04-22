@@ -11,5 +11,10 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "org.apache.spark" %% "spark-core" % sparkVersion
+  "org.apache.spark" %% "spark-core" % sparkVersion,
+  "org.apache.spark" %% "spark-sql" % sparkVersion,
+
+  // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j
+  "org.apache.logging.log4j" % "log4j" % "2.13.1" pomOnly()
 )
+
