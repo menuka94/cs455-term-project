@@ -1,7 +1,8 @@
 package census
 
 object Main {
-  private final val logger = org.apache.log4j.Logger.getLogger(Main.getClass.getName)
+  private final val logger = org.apache.log4j.LogManager.getLogger(Main.getClass.getName)
+  private final val LOG_PREFIX = "**************************"
 
   def main(args: Array[String]) = {
     // start Spark Context
@@ -21,8 +22,8 @@ object Main {
       .option("mode", "DROPMALFORMED")
       .load(inputPath)
 
-    logger.info("describing dataframe")
-//    println(df.rdd.)
+    logger.info(LOG_PREFIX + " Dscribing dataframe")
+    logger.info(df.describe())
 
     sqlSparkSession.stop()
   }
