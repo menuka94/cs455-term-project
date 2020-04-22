@@ -22,7 +22,7 @@ object Main {
       .option("mode", "DROPMALFORMED")
       .load(inputPath)
 
-    logger.info(LOG_PREFIX + " Dscribing dataframe")
+    logger.info(LOG_PREFIX + " Describing dataframe")
     logger.info(df.describe())
 
     sqlSparkSession.stop()
