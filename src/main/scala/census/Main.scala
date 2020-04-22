@@ -1,5 +1,7 @@
 package census
 
+import util.DataFields
+
 object Main {
   private final val logger = org.apache.log4j.LogManager.getLogger(Main.getClass.getName)
   private final val LOG_PREFIX = "**************************"
@@ -22,7 +24,10 @@ object Main {
       .option("mode", "DROPMALFORMED")
       .load(inputPath)
 
-    logger.info(LOG_PREFIX + " Dscribing dataframe")
+    val columns = Seq(DataFields.VEHICLE_MAKE, DataFields.REGISTRATION_STATE)
+    val df2 = df.select()
+
+    logger.info(LOG_PREFIX + " Describing dataframe")
     logger.info(df.describe())
 
     sqlSparkSession.stop()
