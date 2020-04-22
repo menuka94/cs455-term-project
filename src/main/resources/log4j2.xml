@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
 
-    <!-- Author:  Crunchify.com  -->
     <Appenders>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n" />
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+<!--            <PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n" />-->
+            <PatternLayout pattern="%highlight{%d [%t] %-5level: %msg%n%throwable}{FATAL=white, ERROR=red, WARN=blue, INFO=black, DEBUG=green, TRACE=blue}"/>
+<!--            <PatternLayout pattern=" %highlight{%d{ ISO8601 } [%t] %-5level: %msg%n%throwable}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan,"/>-->
         </Console>
 
-        <RollingFile name="RollingFile" filename="log/CrunchifyTest.log"
+        <RollingFile name="RollingFile" filename="log/log.log"
                      filepattern="${logPath}/%d{YYYYMMddHHmmss}-fargo.log">
             <PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n" />
             <Policies>
@@ -19,7 +20,7 @@
     </Appenders>
     <Loggers>
         <Root level="info">
-            <AppenderRef ref="Console" />
+            <AppenderRef ref="ConsoleAppender" />
             <AppenderRef ref="RollingFile" />
         </Root>
     </Loggers>
