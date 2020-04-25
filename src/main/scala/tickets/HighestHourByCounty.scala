@@ -21,8 +21,7 @@ object HighestHourByCounty {
     var parking_tickets = sc.textFile(PARKING_TICKETS_FILE_PATH,NUMBER_OF_PARTITIONS)
 
     // remove header row from the rdd
-    val header1 = parking_tickets.first()
-    parking_tickets = parking_tickets.filter(row => row != header1)
+    parking_tickets = parking_tickets.filter(row => !row.startsWith("Summons"))
 
     val total_count = parking_tickets.count()
     sb.append("Total Records : " + total_count + "\n\n")
