@@ -1,0 +1,6 @@
+geoid,name,median,median_annotation,median_moe,median_moe_annotation,state,county
+36005,"Bronx County, New York",34284.0,,461.0,,36,005
+36047,"Kings County, New York",46958.0,,433.0,,36,047
+36081,"Queens County, New York",57210.0,,508.0,,36,081
+36061,"New York County, New York",71656.0,,825.0,,36,061
+36085,"Richmond County, New York",74043.0,,1255.0,,36,085

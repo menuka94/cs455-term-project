@@ -1,0 +1,6 @@
+geoid,name,universe,universe_annotation,universe_moe,universe_moe_annotation,income_past12months_below_poverty_level,income_past12months_below_poverty_level_annotation,income_past12months_below_poverty_level_moe,income_past12months_below_poverty_level_moe_annotation,income_past12months_at_or_above_poverty_level,income_past12months_at_or_above_poverty_level_annotation,income_past12months_at_or_above_poverty_level_moe,income_past12months_at_or_above_poverty_level_moe_annotation,state,county
+36005,"Bronx County, New York",1419902.0,,1312.0,,422197.0,,6996.0,,997705.0,,7208.0,,36,005
+36081,"Queens County, New York",2313290.0,,1352.0,,317142.0,,6293.0,,1996148.0,,6493.0,,36,081
+36047,"Kings County, New York",2611506.0,,1472.0,,570731.0,,8490.0,,2040775.0,,8460.0,,36,047
+36061,"New York County, New York",1607109.0,,1281.0,,277483.0,,6371.0,,1329626.0,,6324.0,,36,061
+36085,"Richmond County, New York",470199.0,,746.0,,60735.0,,2545.0,,409464.0,,2702.0,,36,085
