@@ -7,7 +7,7 @@ object ViolationsOverMonths {
   val COUNTY_LIST =  List(CountyName.BRONX_COUNTY, CountyName.NEW_YORK_COUNTY, CountyName.KINGS_COUNTY, CountyName.QUEENS_COUNTY, CountyName.RICHMOND_COUNTY)
   val MONTH_MAP = Map( 1 -> "Jan", 2 -> "Feb", 3 -> "Mar", 4 -> "Apr", 5 -> "May", 6 -> "Jun", 7 -> "Jul", 8 -> "Aug", 9 -> "Sep", 10 -> "Oct", 11 -> "Nov", 12 -> "Dec")
   val SEPARATOR = ":"
-  val YEAR_LIST = List("2014", "2015", "2016", "2017")
+  val YEAR_LIST = List("2013", "2014", "2015", "2016", "2017")
 
   def main(args: Array[String]): Unit = {
     val PARKING_TICKETS_FILE_PATH = args(0)
