@@ -17,8 +17,6 @@ object HighestHourByCounty {
     val OUTPUT_FILE = args(1)
     val NUMBER_OF_PARTITIONS = 100
 
-    //    val spark: SparkSession = SparkSession.builder().getOrCreate
-    //    val sc = spark.sparkContext
     val conf = new SparkConf().setAppName("HighestHourByCounty")
     val sc = new SparkContext(conf)
 

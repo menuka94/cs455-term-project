@@ -1,6 +1,6 @@
 package tickets
 
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.{SparkConf, SparkContext}
 import util.CountyName
 
 object ViolationsOverMonths {
@@ -10,8 +10,8 @@ object ViolationsOverMonths {
   val YEAR_LIST = List("2013", "2014", "2015", "2016", "2017")
 
   def main(args: Array[String]): Unit = {
-    if (args.length < 3) {
-      println("Usage HighestHourByCounty <parking-tickets-file-path> <output-file> <county-code> <master[optional]")
+    if (args.length != 3) {
+      println("Usage HighestHourByCounty <parking-tickets-file-path> <output-file> <county-code>")
       System.exit(0)
     }
 
@@ -25,14 +25,8 @@ object ViolationsOverMonths {
       System.exit(0)
     }
 
-    var master = "local"
-
-    if (args.length == 4 && args(3) != "") {
-      master = args(2)
-    }
-
-    val spark: SparkSession = SparkSession.builder.master(master).getOrCreate
-    val sc = spark.sparkContext
+    val conf = new SparkConf().setAppName("ViolationsOverMonths")
+    val sc = new SparkContext(conf)
 
     val sb = new StringBuilder("NYC Parking Tickets\n")
 

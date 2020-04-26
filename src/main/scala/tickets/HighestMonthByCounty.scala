@@ -1,6 +1,6 @@
 package tickets
 
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.{SparkConf, SparkContext}
 import util.CountyName
 
 object HighestMonthByCounty {
@@ -9,8 +9,8 @@ object HighestMonthByCounty {
   val SEPARATOR = ":"
 
   def main(args: Array[String]): Unit = {
-    if (args.length < 2) {
-      println("Usage HighestHourByCounty <parking-tickets-file-path> <output-file> <master[optional]")
+    if (args.length != 2) {
+      println("Usage HighestHourByCounty <parking-tickets-file-path> <output-file>")
       System.exit(0)
     }
 
@@ -18,14 +18,8 @@ object HighestMonthByCounty {
     val OUTPUT_FILE = args(1)
     val NUMBER_OF_PARTITIONS = 100
 
-    var master = "local"
-
-    if (args.length == 3 && args(2) != "") {
-      master = args(2)
-    }
-
-    val spark: SparkSession = SparkSession.builder.master(master).getOrCreate
-    val sc = spark.sparkContext
+    val conf = new SparkConf().setAppName("HighestMonthByCounty")
+    val sc = new SparkContext(conf)
 
     val sb = new StringBuilder("NYC Parking Tickets\n")
 
