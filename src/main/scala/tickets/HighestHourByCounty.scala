@@ -38,16 +38,24 @@ object HighestHourByCounty {
 
       val data = value.split(",")
 
-      // check for null, empty fields and Violation Time length to be exactly 5
-      if (!data(19).equals(null) && !data(19).isEmpty && data(19).length == 5 && data(19).substring(0, 2).toInt < 12 && !data(21).equals(null) && !data(21).isEmpty) {
-        val county = get_county(data(21))
-        val hour = get_hour(data(19))
+      try {
+        // check for null, empty fields and Violation Time length to be exactly 5
+        if (!data(19).equals(null) && !data(19).isEmpty && data(19).length == 5 && data(19).substring(0, 2).toInt < 12 && !data(21).equals(null) && !data(21).isEmpty) {
+          val county = get_county(data(21))
+          val hour = get_hour(data(19))
 
-        county + ":" + hour
-      }
-      else // all invalid entries for Violation Time and Violation County will return empty strings
-      {
-        ("")
+          county + ":" + hour
+        }
+        else // all invalid entries for Violation Time and Violation County will return empty strings
+        {
+          ("")
+        }
+      } catch {
+        case e: NumberFormatException => {
+          println("Non-integer found")
+          e.printStackTrace();
+          ("")
+        };
       }
     })
 
