@@ -1,6 +1,6 @@
 package tickets
 
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.{SparkConf, SparkContext}
 import util.CountyName
 
 object HighestHourByCounty {
@@ -17,8 +17,10 @@ object HighestHourByCounty {
     val OUTPUT_FILE = args(1)
     val NUMBER_OF_PARTITIONS = 100
 
-    val spark: SparkSession = SparkSession.builder.getOrCreate()
-    val sc = spark.sparkContext
+    //    val spark: SparkSession = SparkSession.builder().getOrCreate
+    //    val sc = spark.sparkContext
+    val conf = new SparkConf().setAppName("HighestHourByCounty")
+    val sc = new SparkContext(conf)
 
     val sb = new StringBuilder("NYC Parking Tickets\n")
 
