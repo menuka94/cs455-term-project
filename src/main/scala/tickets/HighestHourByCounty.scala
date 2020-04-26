@@ -8,8 +8,8 @@ object HighestHourByCounty {
   val COUNTY_LIST = List(CountyName.BRONX_COUNTY, CountyName.NEW_YORK_COUNTY, CountyName.KINGS_COUNTY, CountyName.QUEENS_COUNTY, CountyName.RICHMOND_COUNTY)
 
   def main(args: Array[String]): Unit = {
-    if (args.length < 2) {
-      println("Usage HighestHourByCounty <parking-tickets-file-path> <output-file> <master[optional]")
+    if (args.length != 2) {
+      println("Usage HighestHourByCounty <parking-tickets-file-path> <output-file>")
       System.exit(0)
     }
 
@@ -17,13 +17,7 @@ object HighestHourByCounty {
     val OUTPUT_FILE = args(1)
     val NUMBER_OF_PARTITIONS = 100
 
-    var master = "local"
-
-    if (args.length == 3 && args(2) != "") {
-      master = args(2)
-    }
-
-    val spark: SparkSession = SparkSession.builder.master(master).getOrCreate
+    val spark: SparkSession = SparkSession.builder.getOrCreate()
     val sc = spark.sparkContext
 
     val sb = new StringBuilder("NYC Parking Tickets\n")
