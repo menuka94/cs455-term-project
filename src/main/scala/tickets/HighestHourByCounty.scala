@@ -1,24 +1,29 @@
 package tickets
 
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.{SparkConf, SparkContext}
 import util.CountyName
 
 object HighestHourByCounty {
 
-  val COUNTY_LIST =  List(CountyName.BRONX_COUNTY, CountyName.NEW_YORK_COUNTY, CountyName.KINGS_COUNTY, CountyName.QUEENS_COUNTY, CountyName.RICHMOND_COUNTY)
+  val COUNTY_LIST = List(CountyName.BRONX_COUNTY, CountyName.NEW_YORK_COUNTY, CountyName.KINGS_COUNTY, CountyName.QUEENS_COUNTY, CountyName.RICHMOND_COUNTY)
 
   def main(args: Array[String]): Unit = {
+    if (args.length != 2) {
+      println("Usage HighestHourByCounty <parking-tickets-file-path> <output-file>")
+      System.exit(0)
+    }
+
     val PARKING_TICKETS_FILE_PATH = args(0)
     val OUTPUT_FILE = args(1)
     val NUMBER_OF_PARTITIONS = 100
 
-    val spark: SparkSession = SparkSession.builder.master("local").getOrCreate
-    val sc = spark.sparkContext
+    val conf = new SparkConf().setAppName("HighestHourByCounty")
+    val sc = new SparkContext(conf)
 
     val sb = new StringBuilder("NYC Parking Tickets\n")
 
     //Getting all of the incident data that is needed for analysis
-    var parking_tickets = sc.textFile(PARKING_TICKETS_FILE_PATH,NUMBER_OF_PARTITIONS)
+    var parking_tickets = sc.textFile(PARKING_TICKETS_FILE_PATH, NUMBER_OF_PARTITIONS)
 
     // remove header row from the rdd
     parking_tickets = parking_tickets.filter(row => !row.startsWith("Summons"))
@@ -34,7 +39,7 @@ object HighestHourByCounty {
         val county = get_county(data(21))
         val hour = get_hour(data(19))
 
-        county+":"+hour
+        county + ":" + hour
       }
       else // all invalid entries for Violation Time and Violation County will return empty strings
       {

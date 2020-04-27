@@ -3,7 +3,7 @@ package census
 import util.DataFields
 
 object Main {
-  private final val logger = org.apache.log4j.LogManager.getLogger(Main.getClass.getName)
+  private final val log = org.apache.log4j.LogManager.getLogger(Main.getClass.getName)
   private final val LOG_PREFIX = "************************** "
 
   def main(args: Array[String]) = {
@@ -24,21 +24,29 @@ object Main {
       .option("mode", "DROPMALFORMED")
       .load(inputPath)
 
-    val df2 = df.select(DataFields.VEHICLE_MAKE)
-    val collectedDf2 = df2.collect()
-    for (value <- collectedDf2) {
-      logger.info(LOG_PREFIX + value)
+    //    val df2 = df.select(DataFields.VEHICLE_MAKE)
+    //    val collectedDf2 = df2.collect()
+    //    for (value <- collectedDf2) {
+    //      log.info(LOG_PREFIX + value)
+    //    }
+
+    //    val df3 = df.select(DataFields.LATITUDE, DataFields.LONGITUDE)
+    //    val collectedDf3 = df3.collect()
+    //    for (value <- collectedDf3) {
+    //      log.info(LOG_PREFIX + value)
+    //    }
+
+    val df4 = df.select(DataFields.VIOLATION_COUNTY)
+    val distinctCounties = df4.select(df(DataFields.VIOLATION_COUNTY)).distinct()
+    val collectedCounties = distinctCounties.collect()
+    log.info(LOG_PREFIX + "Distinct Counties")
+    for (value <- collectedCounties) {
+      log.info(LOG_PREFIX + value);
     }
 
-    val df3 = df.select(DataFields.LATITUDE, DataFields.LONGITUDE)
-    val collectedDf3 = df3.collect()
-    for (value <- collectedDf3) {
-      logger.info(LOG_PREFIX + value)
-    }
 
-
-    logger.info(LOG_PREFIX + " Describing dataframe")
-    logger.info(df.describe())
+    log.info(LOG_PREFIX + " Describing dataframe")
+    log.info(df.describe())
 
     sqlSparkSession.stop()
   }

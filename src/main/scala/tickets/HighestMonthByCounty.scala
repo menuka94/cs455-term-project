@@ -1,25 +1,30 @@
 package tickets
 
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.{SparkConf, SparkContext}
 import util.CountyName
 
 object HighestMonthByCounty {
-  val COUNTY_LIST =  List(CountyName.BRONX_COUNTY, CountyName.NEW_YORK_COUNTY, CountyName.KINGS_COUNTY, CountyName.QUEENS_COUNTY, CountyName.RICHMOND_COUNTY)
-  val monthMap = Map( 1 -> "Jan", 2 -> "Feb", 3 -> "Mar", 4 -> "Apr", 5 -> "May", 6 -> "Jun", 7 -> "Jul", 8 -> "Aug", 9 -> "Sep", 10 -> "Oct", 11 -> "Nov", 12 -> "Dec")
+  val COUNTY_LIST = List(CountyName.BRONX_COUNTY, CountyName.NEW_YORK_COUNTY, CountyName.KINGS_COUNTY, CountyName.QUEENS_COUNTY, CountyName.RICHMOND_COUNTY)
+  val monthMap = Map(1 -> "Jan", 2 -> "Feb", 3 -> "Mar", 4 -> "Apr", 5 -> "May", 6 -> "Jun", 7 -> "Jul", 8 -> "Aug", 9 -> "Sep", 10 -> "Oct", 11 -> "Nov", 12 -> "Dec")
   val SEPARATOR = ":"
 
   def main(args: Array[String]): Unit = {
+    if (args.length != 2) {
+      println("Usage HighestHourByCounty <parking-tickets-file-path> <output-file>")
+      System.exit(0)
+    }
+
     val PARKING_TICKETS_FILE_PATH = args(0)
     val OUTPUT_FILE = args(1)
     val NUMBER_OF_PARTITIONS = 100
 
-    val spark: SparkSession = SparkSession.builder.master("local").getOrCreate
-    val sc = spark.sparkContext
+    val conf = new SparkConf().setAppName("HighestMonthByCounty")
+    val sc = new SparkContext(conf)
 
     val sb = new StringBuilder("NYC Parking Tickets\n")
 
     //Getting all of the incident data that is needed for analysis
-    var parking_tickets = sc.textFile(PARKING_TICKETS_FILE_PATH,NUMBER_OF_PARTITIONS)
+    var parking_tickets = sc.textFile(PARKING_TICKETS_FILE_PATH, NUMBER_OF_PARTITIONS)
 
     // remove header row from the rdd
     parking_tickets = parking_tickets.filter(row => !row.startsWith("Summons"))
@@ -33,12 +38,11 @@ object HighestMonthByCounty {
       val data = value.split(",")
 
       // check for null, empty fields and Violation Time length to be exactly 5
-      if( !data(4).equals(null) &&  !data(4).isEmpty && data(4).length == 10 && data(19).substring(0,2).toInt < 12 && !data(21).equals(null) && !data(21).isEmpty )
-      {
+      if (!data(4).equals(null) && !data(4).isEmpty && data(4).length == 10 && data(19).substring(0, 2).toInt < 12 && !data(21).equals(null) && !data(21).isEmpty) {
         val county = get_county(data(21))
         val month = get_month(data(4))
 
-        county+SEPARATOR+month
+        county + SEPARATOR + month
       }
       else // all invalid entries for Violation Time and Violation County will return empty strings
       {
@@ -57,13 +61,13 @@ object HighestMonthByCounty {
     //processedRdd.foreach( value => println(value))
 
     // create a pair RDD; key -> county:hour, value -> 1
-    val countyHourPairRDD = processedRdd.map( value => Tuple2(value,1) )
+    val countyHourPairRDD = processedRdd.map(value => Tuple2(value, 1))
 
-    val countyHourCountRDD = countyHourPairRDD.reduceByKey(_+_).persist()
+    val countyHourCountRDD = countyHourPairRDD.reduceByKey(_ + _).persist()
 
     var topList = List[String]()
 
-    for (county_name <- COUNTY_LIST){
+    for (county_name <- COUNTY_LIST) {
       val countyData = countyHourCountRDD.filter(x => x._1.startsWith(county_name))
 
       // sort per county key,value pairs by value and pick the key with the highest value
@@ -74,7 +78,7 @@ object HighestMonthByCounty {
     // convert list to a RDD and save it
     val topRDD = sc.parallelize(topList)
 
-    val mappedRDD = topRDD.map( entry => Tuple2(entry.split(SEPARATOR)(0), monthMap(entry.split(SEPARATOR)(1).toInt)))
+    val mappedRDD = topRDD.map(entry => Tuple2(entry.split(SEPARATOR)(0), monthMap(entry.split(SEPARATOR)(1).toInt)))
 
     mappedRDD.saveAsTextFile(OUTPUT_FILE)
 
@@ -82,42 +86,38 @@ object HighestMonthByCounty {
 
   /**
    * Extract month from date field
+   *
    * @param str date with the format MM/DD/YYYY
    * @return month as an integer
    */
-  def get_month(str: String) : Int = {
+  def get_month(str: String): Int = {
     str.substring(0, 2).toInt
   }
 
   /**
    * This method creates standard county codes if they are not following the standard
+   *
    * @param str Violation County in the dataset
    * @return Standard County Code
    */
-  def get_county(str: String) : String = {
+  def get_county(str: String): String = {
 
-    if( COUNTY_LIST.contains(str) )
-    {
+    if (COUNTY_LIST.contains(str)) {
       str
     }
-    else if(str == "RICH" || str == "RC")
-    {
+    else if (str == "RICH" || str == "RC") {
       CountyName.RICHMOND_COUNTY
     }
-    else if(str == "QUEEN")
-    {
+    else if (str == "QUEEN") {
       CountyName.QUEENS_COUNTY
     }
-    else if(str == "BRONX")
-    {
+    else if (str == "BRONX") {
       CountyName.BRONX_COUNTY
     }
-    else if(str == "KINGS" || str == "KI")
-    {
+    else if (str == "KINGS" || str == "KI") {
       CountyName.KINGS_COUNTY
     }
-    else
-    {
+    else {
       CountyName.NEW_YORK_COUNTY
     }
   }
