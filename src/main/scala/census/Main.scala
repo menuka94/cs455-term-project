@@ -1,6 +1,6 @@
 package census
 
-import util.DataFields
+import util.StringDataFields
 
 object Main {
   private final val log = org.apache.log4j.LogManager.getLogger(Main.getClass.getName)
@@ -36,8 +36,8 @@ object Main {
     //      log.info(LOG_PREFIX + value)
     //    }
 
-    val df4 = df.select(DataFields.VIOLATION_COUNTY)
-    val distinctCounties = df4.select(df(DataFields.VIOLATION_COUNTY)).distinct()
+    val df4 = df.select(StringDataFields.VIOLATION_COUNTY)
+    val distinctCounties = df4.select(df(StringDataFields.VIOLATION_COUNTY)).distinct()
     val collectedCounties = distinctCounties.collect()
     log.info(LOG_PREFIX + "Distinct Counties")
     for (value <- collectedCounties) {

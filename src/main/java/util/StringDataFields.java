@@ -1,6 +1,6 @@
 package util;
 
-public class DataFields {
+public class StringDataFields {
     public static final String SUMMONS_NUMBER = "Summons Number";
     public static final String PLATE_ID = "Plate ID";
     public static final String REGISTRATION_STATE = "Registration State";
