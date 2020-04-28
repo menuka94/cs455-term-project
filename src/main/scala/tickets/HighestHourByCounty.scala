@@ -20,6 +20,9 @@ object HighestHourByCounty {
     val conf = new SparkConf().setAppName("HighestHourByCounty")
     val sc = new SparkContext(conf)
 
+//    val spark: SparkSession = SparkSession.builder.master("local").getOrCreate
+//    val sc = spark.sparkContext
+
     val sb = new StringBuilder("NYC Parking Tickets\n")
 
     //Getting all of the incident data that is needed for analysis
@@ -33,8 +36,9 @@ object HighestHourByCounty {
 
       val data = value.split(",")
 
+      try {
       // check for null, empty fields and Violation Time length to be exactly 5
-      if( data.length >= 21 && !data(19).equals(null) &&  !data(19).isEmpty && data(19).matches("^[0-9]+$") && data(19).length == 5 && data(19).substring(0,2).toInt < 12 && !data(21).equals(null) && !data(21).isEmpty )
+      if( data.length >= 21 && !data(19).equals(null) &&  !data(19).isEmpty && data(19).length == 5 && data(19).substring(0,2).toInt < 12 && !data(21).equals(null) && !data(21).isEmpty )
       {
         val county = get_county(data(21))
         val hour = get_hour(data(19))
@@ -44,6 +48,13 @@ object HighestHourByCounty {
       else // all invalid entries for Violation Time and Violation County will return empty strings
       {
         ("")
+      }
+    } catch {
+        case e: NumberFormatException => {
+          println("Non-integer found")
+          //e.printStackTrace();
+          ("")
+        };
       }
     })
 
