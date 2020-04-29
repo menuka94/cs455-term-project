@@ -25,7 +25,7 @@ object ViolationTypeByYear {
     val parkingData = spark.read.format("csv").option("header", "true").option("mode", "DROPMALFORMED").load(PARKING_TICKETS_FILE_PATH/*"hdfs://topeka:4056/cs455/park/*.csv"*/*/)
     val trimmedData = parkingData.select(DataFields.VIOLATION_CODE, DataFields.ISSUE_DATE)
 
-    val output = trimmedData.groupBy(DataFields.VIOLATION_CODE, get_year(DataFields.ISSUE_DATE)).count
+    //val output = trimmedData.groupBy(DataFields.VIOLATION_CODE, get_year(DataFields.ISSUE_DATE)).count
     //do an orderBy?
     //https://stackoverflow.com/questions/37039943/spark-scala-how-to-transform-a-column-in-a-df
     //https://stackoverflow.com/questions/33393815/count-instances-of-combination-of-columns-in-spark-dataframe-using-scala
