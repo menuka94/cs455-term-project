@@ -31,7 +31,6 @@ object ViolationTypeByYear {
 
     filteredOutput.collect()
 
-    //val output = trimmedData.groupBy(DataFields.VIOLATION_CODE, get_year(DataFields.ISSUE_DATE)).count
     //do an orderBy?
     //https://stackoverflow.com/questions/37039943/spark-scala-how-to-transform-a-column-in-a-df
     //https://stackoverflow.com/questions/33393815/count-instances-of-combination-of-columns-in-spark-dataframe-using-scala
