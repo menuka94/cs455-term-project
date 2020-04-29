@@ -1,7 +1,7 @@
 package tickets
 
 import org.apache.spark.{SparkConf, SparkContext}
-import util.CountyName
+import util.{CountyName, IntDataFields}
 
 object ViolationsOverMonths {
   val COUNTY_LIST = List(CountyName.BRONX_COUNTY, CountyName.NEW_YORK_COUNTY, CountyName.KINGS_COUNTY, CountyName.QUEENS_COUNTY, CountyName.RICHMOND_COUNTY)
@@ -43,18 +43,24 @@ object ViolationsOverMonths {
     var processedRdd = parking_tickets.map(value => {
 
       val data = value.split(",")
+      try {
+        // check for null, empty fields for Issue Date and County
+        if (data.length >= 21 && !data(IntDataFields.ISSUE_DATE).equals(null) && !data(IntDataFields.ISSUE_DATE).isEmpty && data(IntDataFields.ISSUE_DATE).length == 10 && !data(IntDataFields.VIOLATION_COUNTY).equals(null) && !data(IntDataFields.VIOLATION_COUNTY).isEmpty) {
+          val county = get_county(data(IntDataFields.VIOLATION_COUNTY))
+          val month = get_month(data(IntDataFields.ISSUE_DATE))
+          val year = get_year(data(IntDataFields.ISSUE_DATE))
 
-      // check for null, empty fields and Violation Time length to be exactly 5
-      if (!data(4).equals(null) && !data(4).isEmpty && data(4).length == 10 && !data(21).equals(null) && !data(21).isEmpty) {
-        val county = get_county(data(21))
-        val month = get_month(data(4))
-        val year = get_year(data(4))
-
-        county + SEPARATOR + year + SEPARATOR + month
-      }
-      else // all invalid entries for Violation Time and Violation County will return empty strings
-      {
-        ("")
+          county + SEPARATOR + year + SEPARATOR + month
+        }
+        else // all invalid entries for Violation Time and Violation County will return empty strings
+        {
+          ("")
+        }
+      } catch {
+        case e: NumberFormatException => {
+          println("Non-integer found")
+          ("")
+        }
       }
     })
 
