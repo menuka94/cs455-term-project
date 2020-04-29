@@ -36,17 +36,23 @@ object HighestMonthByCounty {
     var processedRdd = parking_tickets.map(value => {
 
       val data = value.split(",")
+      try {
+        // check for null, empty fields and Violation Time length to be exactly 5
+        if (data.length >= 21 && !data(4).equals(null) && !data(4).isEmpty && data(4).length == 10 && data(19).substring(0, 2).toInt < 12 && !data(21).equals(null) && !data(21).isEmpty) {
+          val county = get_county(data(21))
+          val month = get_month(data(4))
 
-      // check for null, empty fields and Violation Time length to be exactly 5
-      if (!data(4).equals(null) && !data(4).isEmpty && data(4).length == 10 && data(19).substring(0, 2).toInt < 12 && !data(21).equals(null) && !data(21).isEmpty) {
-        val county = get_county(data(21))
-        val month = get_month(data(4))
-
-        county + SEPARATOR + month
-      }
-      else // all invalid entries for Violation Time and Violation County will return empty strings
-      {
-        ("")
+          county + SEPARATOR + month
+        }
+        else // all invalid entries for Violation Time and Violation County will return empty strings
+        {
+          ("")
+        }
+      } catch {
+        case e: NumberFormatException => {
+          println("Non-integer found")
+          ("")
+        }
       }
     })
 
