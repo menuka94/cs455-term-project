@@ -1,7 +1,7 @@
 package tickets
 
 import org.apache.spark.{SparkConf, SparkContext}
-import util.CountyName
+import util.{CountyName, IntDataFields}
 
 object HighestMonthByCounty {
   val COUNTY_LIST = List(CountyName.BRONX_COUNTY, CountyName.NEW_YORK_COUNTY, CountyName.KINGS_COUNTY, CountyName.QUEENS_COUNTY, CountyName.RICHMOND_COUNTY)
@@ -38,9 +38,12 @@ object HighestMonthByCounty {
       val data = value.split(",")
       try {
         // check for null, empty fields and Violation Time length to be exactly 5
-        if (data.length >= 21 && !data(4).equals(null) && !data(4).isEmpty && data(4).length == 10 && data(19).substring(0, 2).toInt < 12 && !data(21).equals(null) && !data(21).isEmpty) {
-          val county = get_county(data(21))
-          val month = get_month(data(4))
+        if (data.length >= 21 && !data(IntDataFields.ISSUE_DATE).equals(null) && !data(IntDataFields.ISSUE_DATE).isEmpty
+          && data(IntDataFields.ISSUE_DATE).length == 10 && data(IntDataFields.VIOLATION_TIME).length >= 2
+          && data(IntDataFields.VIOLATION_TIME).substring(0, 2).toInt < 12
+          && !data(IntDataFields.VIOLATION_COUNTY).equals(null) && !data(IntDataFields.VIOLATION_COUNTY).isEmpty) {
+          val county = get_county(data(IntDataFields.VIOLATION_COUNTY))
+          val month = get_month(data(IntDataFields.ISSUE_DATE))
 
           county + SEPARATOR + month
         }
