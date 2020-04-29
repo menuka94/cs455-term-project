@@ -5,7 +5,6 @@ import org.apache.spark.sql.SparkSession
 import util.DataFields
 
 object ViolationTypeByYear {
-  val SEPARATOR = ":"
   val YEAR_LIST = List("2013", "2014", "2015", "2016", "2017")
 
   def main(args: Array[String]) {
@@ -16,7 +15,6 @@ object ViolationTypeByYear {
 
     val PARKING_TICKETS_FILE_PATH = args(0)
     val OUTPUT_FILE = args(1)
-    val NUMBER_OF_PARTITIONS = 100
 
     val spark = SparkSession.builder.appName("ViolationTypeByYear").getOrCreate()
     val sc = SparkContext.getOrCreate()
@@ -24,6 +22,14 @@ object ViolationTypeByYear {
 
     val parkingData = spark.read.format("csv").option("header", "true").option("mode", "DROPMALFORMED").load(PARKING_TICKETS_FILE_PATH/*"hdfs://topeka:4056/cs455/park/*.csv"*/*/)
     val trimmedData = parkingData.select(DataFields.VIOLATION_CODE, DataFields.ISSUE_DATE)
+
+    val yearlyData = trimmedData.withColumn("Year",$"Issue Date".substr(7,4)).select("Year", "Violation Code")
+
+    val output = yearlyData.groupBy("Year", "Violation Code").count.orderBy("Year")
+
+    val filteredOutput = output.filter($"Year" isin YEAR_LIST)
+
+    filteredOutput.collect()
 
     //val output = trimmedData.groupBy(DataFields.VIOLATION_CODE, get_year(DataFields.ISSUE_DATE)).count
     //do an orderBy?
