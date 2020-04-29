@@ -10,6 +10,7 @@ object VehicleMakeByCounty {
 
   val COUNTY_LIST = List(CountyName.BRONX_COUNTY, CountyName.NEW_YORK_COUNTY, CountyName.KINGS_COUNTY,
     CountyName.QUEENS_COUNTY, CountyName.RICHMOND_COUNTY)
+  val SEPARATOR = ":"
 
   def main(args: Array[String]): Unit = {
     if (args.length != 2) {
@@ -35,7 +36,7 @@ object VehicleMakeByCounty {
     // remove header row from the rdd
     parking_tickets = parking_tickets.filter(row => !row.startsWith("Summons"))
 
-    // do some preprocessing on violation time and county
+    // do some preprocessing on vehicle make and county
     var processedRdd = parking_tickets.map(value => {
 
       val data = value.split(",")
@@ -45,36 +46,34 @@ object VehicleMakeByCounty {
         val county = get_county(data(IntDataFields.VIOLATION_COUNTY))
         val make = data(IntDataFields.VEHICLE_MAKE)
 
-        (county, make)
+        (county + SEPARATOR + make, 1)
       } else { // all invalid entries for Violation Time and Violation County will return empty strings
-        ()
+        (0,0)
       }
     })
 
-    processedRdd = processedRdd.filter(value => value != null && value.toString.length > 0)
+    // remove all pairs with a 0 key
+    val validPairs = processedRdd.filter(x => x._1 != 0)
 
-    processedRdd.collect().foreach(println)
+//    processedRdd.foreach(x => println("Processed " + x))
 
+    // Add up the count for each county:vehicle_make
+    val countyMakeCountRDD = validPairs.reduceByKey(_ + _).persist()
 
+    var topList = List[String]()
 
-    //    // create a pair RDD; key -> county:make, value -> 1
-    //    val countyMakePairRDD = processedRdd.map(value => Tuple2(value, 1))
-    //
-    //    val countyMakeCountRDD = countyMakePairRDD.reduceByKey(_ + _).persist()
-    //
-    //    var topList = List[String]()
-    //
-    //    for (county_name <- COUNTY_LIST) {
-    //      val countyData = countyMakeCountRDD.filter(x => x._1.startsWith(county_name))
-    //
-    //      // sort per county key,value pairs by value and pick the key with the highest value
-    //      var topEntry = countyData.sortBy(pair => pair._2, ascending = false, numPartitions = NUMBER_OF_PARTITIONS).keys.take(1)
-    //      topList = topEntry.mkString :: topList
-    //    }
-    //
-    //    // convert list to a RDD and save it
-    //    val topRDD = sc.parallelize(topList)
-    //    topRDD.saveAsTextFile(OUTPUT_FILE)
+    // Get the top 5 models for each county
+    for (county_name <- COUNTY_LIST) {
+      val countyData = countyMakeCountRDD.filter(x => x._1.toString.startsWith(county_name))
+
+      // sort per county:vehilce_make key,value pairs by value and pick the top 5 entries
+      var topEntry = countyData.sortBy(pair => pair._2, ascending = false, numPartitions = NUMBER_OF_PARTITIONS).take(5)
+      topList = topEntry.mkString :: topList
+    }
+
+    // convert list to a RDD and save it
+    val topRDD = sc.parallelize(topList)
+    topRDD.saveAsTextFile(OUTPUT_FILE)
   }
 
   /**
