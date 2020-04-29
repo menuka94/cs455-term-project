@@ -2,7 +2,7 @@ package tickets
 
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.SparkSession
-import util.DataFields
+import util.StringDataFields
 
 object ViolationTypeByYear {
   val SEPARATOR = ":"
@@ -20,10 +20,9 @@ object ViolationTypeByYear {
 
     val spark = SparkSession.builder.appName("ViolationTypeByYear").getOrCreate()
     val sc = SparkContext.getOrCreate()
-    import spark.implicits._
 
-    val parkingData = spark.read.format("csv").option("header", "true").option("mode", "DROPMALFORMED").load(PARKING_TICKETS_FILE_PATH/*"hdfs://topeka:4056/cs455/park/*.csv"*/*/)
-    val trimmedData = parkingData.select(DataFields.VIOLATION_CODE, DataFields.ISSUE_DATE)
+    val parkingData = spark.read.format("csv").option("header", "true").option("mode", "DROPMALFORMED").load(PARKING_TICKETS_FILE_PATH /*"hdfs://topeka:4056/cs455/park/*.csv"*/*/)
+    val trimmedData = parkingData.select(StringDataFields.VIOLATION_CODE, StringDataFields.ISSUE_DATE)
 
     //val output = trimmedData.groupBy(DataFields.VIOLATION_CODE, get_year(DataFields.ISSUE_DATE)).count
     //do an orderBy?

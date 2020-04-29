@@ -48,14 +48,14 @@ object VehicleMakeByCounty {
 
         (county + SEPARATOR + make, 1)
       } else { // all invalid entries for Violation Time and Violation County will return empty strings
-        (0,0)
+        (0, 0)
       }
     })
 
     // remove all pairs with a 0 key
     val validPairs = processedRdd.filter(x => x._1 != 0)
 
-//    processedRdd.foreach(x => println("Processed " + x))
+    //    processedRdd.foreach(x => println("Processed " + x))
 
     // Add up the count for each county:vehicle_make
     val countyMakeCountRDD = validPairs.reduceByKey(_ + _).persist()

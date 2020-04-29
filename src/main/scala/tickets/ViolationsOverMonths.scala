@@ -11,7 +11,7 @@ object ViolationsOverMonths {
 
   def main(args: Array[String]): Unit = {
     if (args.length != 3) {
-      println("Usage HighestHourByCounty <parking-tickets-file-path> <output-file> <county-code>")
+      println("Usage ViolationsOverMonths <parking-tickets-file-path> <output-file> <county-code>")
       System.exit(0)
     }
 
