@@ -8,7 +8,6 @@ import java.util
 
 object ViolationTypeByYear {
   val YEAR_LIST = List("2013", "2014", "2015", "2016", "2017")
-  val CODES_LIST: util.List[String] = CodesList.CODES_LIST
 
   def main(args: Array[String]) {
     if (args.length != 2) {
@@ -29,7 +28,7 @@ object ViolationTypeByYear {
 
     val yearlyData = trimmedData.withColumn("Year",$"Issue Date".substr(7,4)).select("Year", "Violation Code")
 
-    val filteredYearlyData = yearlyData.filter($"Year" isin YEAR_LIST).filter($"Violation Code" isin CODES_LIST)
+    val filteredYearlyData = yearlyData.filter($"Year" isin YEAR_LIST).filter($"Violation Code" isin CodesList.CODES_LIST)
 
     val output = filteredYearlyData.groupBy("Year", "Violation Code").count.orderBy("Year", "Violation Code")
 

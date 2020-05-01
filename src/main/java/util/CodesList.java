@@ -4,7 +4,7 @@ import java.util.*;
 
 public class CodesList {
     public static final List<String> CODES_LIST =
-    new ArrayList<>(List.of("30",
+    Arrays.asList("30",
             "60",
             "13",
             "73",
@@ -100,5 +100,5 @@ public class CodesList {
             "74",
             "46",
             "11",
-            "12"));
+            "12");
 }
