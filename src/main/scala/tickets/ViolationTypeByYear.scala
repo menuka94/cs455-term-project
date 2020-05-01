@@ -32,9 +32,7 @@ object ViolationTypeByYear {
 
     val output = filteredYearlyData.groupBy("Year", "Violation Code").count.orderBy("Year", "Violation Code")
 
-    val outputRDD = output.toJavaRDD
-
-    outputRDD.saveAsTextFile(OUTPUT_FILE)
+    output.coalesce(1).write.format("com.databricks.spark.csv").save(OUTPUT_FILE)
 
 
     //output.collect()
