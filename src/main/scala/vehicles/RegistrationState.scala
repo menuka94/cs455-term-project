@@ -1,9 +1,9 @@
-package tickets
+package vehicles
 
 import org.apache.spark.{SparkConf, SparkContext}
 import util.{CountyName, IntDataFields}
 
-object HighestHourByCounty {
+object RegistrationState {
 
   val COUNTY_LIST = List(CountyName.BRONX_COUNTY, CountyName.NEW_YORK_COUNTY, CountyName.KINGS_COUNTY, CountyName.QUEENS_COUNTY, CountyName.RICHMOND_COUNTY)
 

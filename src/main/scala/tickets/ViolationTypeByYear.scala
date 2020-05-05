@@ -2,9 +2,9 @@ package tickets
 
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.SparkSession
-import util.DataFields
 import util.CodesList
 import java.util
+import util.StringDataFields
 
 object ViolationTypeByYear {
   val YEAR_LIST = List("2013", "2014", "2015", "2016", "2017")
@@ -20,11 +20,10 @@ object ViolationTypeByYear {
 
     val spark = SparkSession.builder.appName("ViolationTypeByYear").getOrCreate()
     val sc = SparkContext.getOrCreate()
-    import spark.implicits._
 
-    val parkingData = spark.read.format("csv").option("header", "true").option("mode", "DROPMALFORMED").load(PARKING_TICKETS_FILE_PATH/*"hdfs://topeka:4056/cs455/park/*.csv"*/*/)
 
-    val trimmedData = parkingData.select(DataFields.VIOLATION_CODE, DataFields.ISSUE_DATE)
+    val parkingData = spark.read.format("csv").option("header", "true").option("mode", "DROPMALFORMED").load(PARKING_TICKETS_FILE_PATH /*"hdfs://topeka:4056/cs455/park/*.csv"*/*/)
+    val trimmedData = parkingData.select(StringDataFields.VIOLATION_CODE, StringDataFields.ISSUE_DATE)
 
     val yearlyData = trimmedData.withColumn("Year",$"Issue Date".substr(7,4)).select("Year", "Violation Code")
 
