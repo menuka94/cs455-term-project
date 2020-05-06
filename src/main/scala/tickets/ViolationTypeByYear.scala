@@ -3,8 +3,8 @@ package tickets
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.SparkSession
 import util.CodesList
-import java.util
 import util.StringDataFields
+import java.util
 
 object ViolationTypeByYear {
   val YEAR_LIST = List("2013", "2014", "2015", "2016", "2017")
