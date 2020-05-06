@@ -21,6 +21,8 @@ object ViolationTypeByYear {
     val spark = SparkSession.builder.appName("ViolationTypeByYear").getOrCreate()
     val sc = SparkContext.getOrCreate()
 
+    import spark.implicits._
+
 
     val parkingData = spark.read.format("csv").option("header", "true").option("mode", "DROPMALFORMED").load(PARKING_TICKETS_FILE_PATH /*"hdfs://topeka:4056/cs455/park/*.csv"*/*/)
     val trimmedData = parkingData.select(StringDataFields.VIOLATION_CODE, StringDataFields.ISSUE_DATE)
